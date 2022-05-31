@@ -23,28 +23,26 @@
     <nav class="container">
         <div class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom bg-light">
             <ul class="nav nav-pills">
-                <li class="nav-item px-2"><a href="#" class="nav-link active bg-white" style="color:rgb(135, 82, 210)" aria-current="page"><i class="bi bi-house" style="color:rgb(163, 126, 214)"></i>
+                <li class="nav-item px-2"><a href="{{url_for('index')}}" class="nav-link active bg-white" style="color:rgb(135, 82, 210)" aria-current="page"><i class="bi bi-house" style="color:rgb(163, 126, 214)"></i>
                     Home</a></li>
-                <li class="nav-item px-2"><a href="#" class="nav-link active bg-white" style="color:rgb(135, 82, 210)" aria-current="page"><i class="bi bi-download" style="color:rgb(163, 126, 214)"></i>
+                <li class="nav-item px-2"><a href="{{url_for('index', product_id=39562616)}}" class="nav-link active bg-white" style="color:rgb(135, 82, 210)" aria-current="page"><i class="bi bi-download" style="color:rgb(163, 126, 214)"></i>
                     Download product</a></li>
-                <li class="nav-item px-2"><a href="#" class="nav-link active bg-white" style="color:rgb(135, 82, 210)" aria-current="page"><i class="bi bi-card-list" style="color:rgb(163, 126, 214)"></i>
+                <li class="nav-item px-2"><a href="{{url_for('products')}}" class="nav-link active bg-white" style="color:rgb(135, 82, 210)" aria-current="page"><i class="bi bi-card-list" style="color:rgb(163, 126, 214)"></i>
                     List of products</a></li>
-                <li class="nav-item px-2"><a href="#" class="nav-link active bg-white" style="color:rgb(135, 82, 210)" aria-current="page"><i class="bi bi-file-person" style="color:rgb(163, 126, 214)"></i>
+                <li class="nav-item px-2"><a href="{{url_for('about')}}" class="nav-link active bg-white" style="color:rgb(135, 82, 210)" aria-current="page"><i class="bi bi-file-person" style="color:rgb(163, 126, 214)"></i>
                     About</a></li>
             </ul>
         </div>
     </nav>
     <div class="container">
-        <div class="row row-cols-4">
-            <div class="col-6">
-                <p>
-                    {{text}}
-                </p>
+        <div class="row">
+            <div class="col-3">
+
             </div>
-            <div class="col-6">
-                <p>
-                    {{text}}
-                </p>
+            <div class="col">
+                {% block content %}
+                    <p>base.html.jinja</p>
+                {% endblock content %}
             </div>
         </div>
     </div>
