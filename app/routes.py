@@ -29,21 +29,18 @@ selectors = {
 }
 
 @app.route('/')
-@app.route('/index/<name>')
 
 def index():
     return render_template("index.html.jinja")
 
 @app.route('/extract/<product_id>')
 def extract(product_id):
-    product_id = str(input("Enter an id from ceneo: "))
     url = f"https://www.ceneo.pl/{product_id}#tab=reviews"
     all_opinions = []
     while(url):
         print(url)
         response = requests.get(url)
         page = BeautifulSoup(response.text, 'html.parser')
-
         opinions = page.select("div.js_product-review")
         for opinion in opinions:        
             single_opinion = {
