@@ -1,0 +1,13 @@
+{% extends "base.html.jinja" %}
+{% block content %}
+
+    <ul class="list-group">
+        {% for product in products %}
+            <li class="list-group-item d-flex justify-content-between align-items-center" style="color:rgb(163, 126, 214)">
+                <a class="nav-link href="{{url_for('product', product_id=product)}}"><i class="bi bi-card-list" style="color:rgb(163, 126, 214)"></i> {{product}}</a></li>
+                <span class="badge bg-primary rounded-pill">{{loop.index}}</span>
+            </li>
+        {% endfor %}
+    </ul>
+
+{% endblock content %}
