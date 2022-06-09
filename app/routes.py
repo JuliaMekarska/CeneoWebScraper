@@ -1,6 +1,5 @@
 from app import app
 from flask import render_template, redirect, url_for, request
-from urllib import response
 import requests
 import json
 from bs4 import BeautifulSoup
@@ -44,7 +43,6 @@ def extract():
         url = f"https://www.ceneo.pl/{product_id}#tab=reviews"
         all_opinions = []
         while(url):
-            print(url)
             response = requests.get(url)
             page = BeautifulSoup(response.text, 'html.parser')
             opinions = page.select("div.js_product-review")
@@ -80,21 +78,15 @@ def about():
 
 @app.route('/product/<product_id>')
 def product(product_id):
-    opinions = pd.read_json(f"opinions/{id_url}.json")
+    opinions = pd.read_json(f"opinions/{product_id}.json")
     opinions["stars"] = opinions["stars"].map(lambda x: float(x.split("/")[0].replace(",",".")))
-
-    opinions_count = len(opinions)
-    pros_count = opinions["pros"].map(bool).sum()
-    cons_count = opinions["cons"].map(bool).sum()
-    average_score = opinions["stars"].mean().round(2)
-
     stats = {
         "opinions_count": len(opinions),
-        "pros_count": opinions["pros"].map.(bool).sum(),
-        "cons": opinions["cons"].map.(bool).sum(),
-
+        "pros_count": opinions["pros"].map(bool).sum(),
+        "cons_count": opinions["cons"].map(bool).sum(),
+        "average_score": opinions["stars"].mean().round(2),
     }
-
+    
     recommendation = opinions["recommendation"].value_counts(dropna=False).sort_index().reindex(["Nie polecam", "Polecam", None], fill_value = 0)
     recommendation.plot.pie(
         label = "",
