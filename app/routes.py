@@ -15,9 +15,12 @@ def extract():
         product = Product(product_id)
         product.extract_name()
         if product.product_name:
-            product.extract_opinions().calculate_stats().draw_charts()
+            product.extract_opinions()
+            product.export_opinions()
+            product.export_product()
         else:
-            pass
+            error = "Upss.."
+            return redirect(url_for('product', product_id=product_id))
 
         return redirect(url_for('product', product_id=product_id))
     else:
