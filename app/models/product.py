@@ -1,17 +1,16 @@
-from turtle import pd
-import pandas
-from app import app
+import os
 import json
+import requests
 import pandas as pd
 import numpy as np
 from bs4 import BeautifulSoup
 from app.utils import get_item
 from app.models.opinion import Opinion
-import requests
+from matplotlib import pyplot as plt
 
 
 class Product():
-    def __init__(self, product_id=0, opinions=[], product_name="", opinions_count=0, pros_count=0, cons_count=0, average_score=0):
+    def __init__(self, product_id, opinions=[], product_name="", opinions_count=0, pros_count=0, cons_count=0, average_score=0):
         self.product_name=product_name
         self.product_id = product_id
         self.opinions=opinions
@@ -29,14 +28,13 @@ class Product():
         return self
 
     def extract_opinions(self):
-        url = f"https://www.ceneo.pl/{product_id}#tab=reviews"
+        url = f"https://www.ceneo.pl/{self.product_id}#tab=reviews"
         while(url):
             response = requests.get(url)
             page = BeautifulSoup(response.text, 'html.parser')
             opinions = page.select("div.js_product-review")
             for opinion in opinions:        
                 single_opinion = Opinion().extract_opinion(opinion)
-                single_opinion["opinion_id"] = opinion["data-entry-id"]
                 self.opinions.append(single_opinion)
             try:
                 url = "https://www.ceneo.pl"+get_item(page, ("a.pagination__next"))["href"]
@@ -48,19 +46,18 @@ class Product():
         return pd.read_json(json.dumps([opinion.to_dict() for opinion in self.opinions]))
 
     def calculate_stats(self):
-
-        opinions = pd.read_json(json.dumps([opinion.to_dict() for opinion in self.opinions]))
+        opinions = self.opinions_to_df()
         opinions["stars"] = opinions["stars"].map(lambda x: float(x.split("/")[0].replace(",",".")))
-            self.opinions_count = len(opinions),
-            self.pros_count = opinions["pros"].map(bool).sum(),
-            self.cons_count = opinions["cons"].map(bool).sum(),
-            self.average_score = opinions["stars"].mean().round(2),
-            return self
+        self.opinions_count = len(opinions)
+        self.pros_count = opinions["pros"].map(bool).sum()
+        self.cons_count = opinions["cons"].map(bool).sum()
+        self.average_score = opinions["stars"].mean().round(2)
+        return self
 
     def draw_charts(self):
-
-        if not os.path.exists("app/opinions"):
-            os.makedirs("app/opinions")
+        opinions = self.opinions_to_df()
+        if not os.path.exists("app/plots"):
+            os.makedirs("app/plots")
     
         recommendation = opinions["recommendation"].value_counts(dropna=False).sort_index().reindex(["Nie polecam", "Polecam", None], fill_value = 0)
         recommendation.plot.pie(
@@ -70,36 +67,44 @@ class Product():
             labels = ["Nie polecam", "Polecam", "Nie mam zdania"]
         )
         plt.title("Rekomendacje")
-        plt.savefig(f"app/static/plots/{product_id}_recommendations.png")
+        plt.savefig(f"app/static/plots/{self.product_id}_recommendations.png")
         plt.close()
-
-    stars = opinions["stars"].value_counts().sort_index().reindex(list(np.arange(0,5.5, 0.5)), fill_value = 0)
-    stars.plot.bar(
-        color = "pink"
-    )
-    plt.title("Oceny produktu")
-    plt.xlabel("Liczba gwiazdek")
-    plt.ylabel("Liczba opinii")
-    plt.grid(True, axis = "y")
-    plt.xticks(rotation = 0)
-    plt.savefig(f"plots/{product_id}stars.png")
-    plt.close()
+        stars = opinions["stars"].value_counts().sort_index().reindex(list(np.arange(0,5.5, 0.5)), fill_value = 0)
+        stars.plot.bar(
+            color = "pink"
+        )
+        plt.title("Oceny produktu")
+        plt.xlabel("Liczba gwiazdek")
+        plt.ylabel("Liczba opinii")
+        plt.grid(True, axis = "y")
+        plt.xticks(rotation = 0)
+        plt.savefig(f"plots/{self.product_id}stars.png")
+        plt.close()
+        return self
 
     def __str__(self):
-        pass
+        return f"Data: {self.product_id}, {self.product_name}, {self.opinions}, {self.opinions_count}, {self.pros_count}, {self.cons_count}, {self.average_score}"
     
     def __repr__(self):
-        pass
+        return f"Data: {self.product_id}, {self.product_name}, {self.opinions}, {self.opinions_count}, {self.pros_count}, {self.cons_count}, {self.average_score}"
 
     def to_dict(self) -> dict:
-        pass
-
+        product_data = {
+            "product_id": self.product_id,
+            "product_name": self.product_name,
+            "opinions": self.opinions,
+            "opinions_count": self.opinions_count,
+            "pros_count": self.pros_count,
+            "cons_count": self.cons_count,
+            "average_score": self.average_score,
+        }
+        return product_data
     def export_opinions(self):
         if not os.path.exists("app/opinions"):
             os.makedirs("app/opinions")
 
-        with open(f"app/opinions/{product_id}.json", "w", encoding ="UTF-8") as jf:
-            json.dump([opinion.to_dict() for opinion in self.opinions] jf, indent=4, ensure_ascii=False)
+        with open(f"app/opinions/{self.product_id}.json", "w", encoding ="UTF-8") as jf:
+            json.dump([opinion.to_dict() for opinion in self.opinions], jf, indent=4, ensure_ascii=False)
         pass
 
     def export_product(self):
