@@ -2,10 +2,11 @@
 {% block content %}
     <h2>Download product reviews</h2>
     {% if error %}
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        <i class="bi bi-heartbreak-fill"></i>
-        <strong>{{error}}</strong>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong><h4><i class="bi bi-heartbreak-fill"></i>{{error}}</h4></strong>
+            <hr>
+            <p>Please check if your product code is correct<p>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     {% endif %}
     <form action="{{url_for('extract')}}" method="POST">

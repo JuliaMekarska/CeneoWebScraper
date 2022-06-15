@@ -1,4 +1,40 @@
 {% extends "base.html.jinja" %}
 {% block content %}
-    <h1 class="display-4">Welcome in my ceneo app <i class="bi bi-emoji-laughing" style="color:rgb(163, 126, 214)"></i></i></h1>
+    <p class="h4 text-center">Welcome in my ceneo app <i class="bi bi-emoji-laughing" style="color:rgb(163, 126, 214)"></i></p>
+    <p class="text-center"> Main purpose of my project is opportunity to download product reviews from website Ceneo.pl.<br>
+    In order to realise the procedure you need to enter product code into a browser placed in the tab "Download opinion".<br>
+    In case of incorrect input, program will warn you about the setback. For every wanted product, app will get:</p>
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col">
+                <ul>
+                    <li>product id</li>
+                    <li>author</li>
+                    <li>recommendation</li>
+                    <li>number of stars</li>
+                </ul>
+            </div>
+            <div class="col">
+                <ul>
+                    <li>whether the opinion is from a buyer</li>
+                    <li>date of publishing</li>
+                    <li>date of purchasing</li>
+                    <li>usefullness</li>
+                </ul>
+            </div>
+            <div class="col">
+                <ul>
+                    <li>content</li>
+                    <li>advantages</li>
+                    <li>disadvantages</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <p class = "text-center">Moreover app can show you basic statistics about opinions, for example charts.</p>
+    <hr>
+    <p class = "text-center">During creation of CeneoWebScraper, multiple program libraries have been used, such as BeautifulSoup, RequestsAdres or Pandas.<br>
+    Whole working process was taken by stages. From the start application was simply structural, but in the end<br>
+    our program has become object-oriented.</p>
+
 {% endblock content %}
