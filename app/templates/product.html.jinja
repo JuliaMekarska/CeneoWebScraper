@@ -1,4 +1,21 @@
 {% extends "base.html.jinja" %}
 {% block content %}
-    <p>{{product_id}}</p>
+    <ul class="list-group">
+    {% for key, value in stats.items() %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{key}}
+            <span class="badge rounded-pill bg-light" style="color:rgb(163, 126, 214)">{{value}}</span>
+        </li>
+    {% endfor %}
+    </ul>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <img src="/static/plots/{{product_id}}_recommendations.png" class="rounded mx-auto d-block" alt="Recommendation">
+            </div>
+            <div class="col">
+                <img src="/static/plots/{{product_id}}_stars.png" class="rounded mx-auto d-block" alt="Stars">
+            </div>
+        </div>
+    </div>
 {% endblock content %}
